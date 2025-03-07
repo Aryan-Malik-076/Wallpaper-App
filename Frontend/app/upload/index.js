@@ -1,9 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const UploadScreen = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [uploadedImages, setUploadedImages] = useState([]);
+
+  // Fetch all uploaded images from the backend
+  const fetchImages = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/uploads");
+      const data = await response.json();
+      setUploadedImages(data);
+    } catch (error) {
+      console.error("❌ Error fetching images:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchImages(); // Fetch images on component mount
+  }, []);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -27,6 +43,7 @@ const UploadScreen = () => {
       if (data.filePath) {
         console.log("✅ Image uploaded:", data.filePath);
         setUploadStatus("✅ Image uploaded successfully!");
+        fetchImages(); // Refresh images list
       } else {
         console.error("❌ Upload failed:", data);
         setUploadStatus("❌ Upload failed.");
@@ -73,6 +90,18 @@ const UploadScreen = () => {
       </button>
 
       {uploadStatus && <p style={{ marginTop: "10px", color: "#ff0000" }}>{uploadStatus}</p>}
+
+      <h2>Uploaded Images</h2>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
+        {uploadedImages.map((img, index) => (
+          <img
+            key={index}
+            src={`http://localhost:5000/uploads/${img.filename}`} 
+            alt={`Uploaded ${index}`}
+            style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "10px" }}
+          />
+        ))}
+      </div>
     </div>
   );
 };
