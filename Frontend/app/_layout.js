@@ -4,7 +4,8 @@ import { Stack } from 'expo-router';
 import Footer from '../components/footer'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useRouter, usePathname } from 'expo-router'; 
+import { usePathname } from 'expo-router'; 
+
 const Layout = () => {
   const pathname = usePathname(); 
 
@@ -48,8 +49,8 @@ const Layout = () => {
             <Stack.Screen
               name="generate/index"
               options={{
-              headerShown: false,
-                      }}
+                headerShown: false,
+              }}
             />
             <Stack.Screen
               name="profile/index"
@@ -57,9 +58,21 @@ const Layout = () => {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="auth/signIn"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="auth/signUp"
+              options={{
+                headerShown: false,
+              }}
+            />
           </Stack>
 
-          {pathname !== '/' && <Footer />}
+          {pathname !== '/' && pathname !== '/auth/signIn' && pathname !== '/auth/signUp' && <Footer />}
         </View>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
